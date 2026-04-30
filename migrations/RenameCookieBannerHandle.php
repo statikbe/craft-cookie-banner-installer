@@ -31,12 +31,6 @@ class m260430_094400_rename_cookie_banner_handle extends Migration
             );
         }
 
-        $this->update(
-            '{{%plugins}}',
-            ['licenseKey' => null],
-            ['and', ['handle' => self::NEW_HANDLE], ['not', ['licenseKey' => null]]]
-        );
-
         if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             Craft::info(
                 'cookie-banner handle rename: skipping project config writes (allowAdminChanges is false).',
@@ -49,13 +43,24 @@ class m260430_094400_rename_cookie_banner_handle extends Migration
         $oldYaml = $projectConfig->get('plugins.' . self::OLD_HANDLE);
         $newYaml = $projectConfig->get('plugins.' . self::NEW_HANDLE);
 
+        $message = 'Rename cookie-banner plugin handle';
+
         if ($oldYaml && !$newYaml) {
-            $projectConfig->set('plugins.' . self::NEW_HANDLE, $oldYaml, force: true);
-            $projectConfig->remove('plugins.' . self::OLD_HANDLE);
+            $projectConfig->set(
+                'plugins.' . self::NEW_HANDLE,
+                $oldYaml,
+                message: $message,
+                updateTimestamp: true,
+                force: true,
+            );
+            $projectConfig->remove('plugins.' . self::OLD_HANDLE, $message);
         }
 
         if ($projectConfig->get('plugins.' . self::NEW_HANDLE . '.licenseKey') !== null) {
-            $projectConfig->remove('plugins.' . self::NEW_HANDLE . '.licenseKey');
+            $projectConfig->remove(
+                'plugins.' . self::NEW_HANDLE . '.licenseKey',
+                'Clear cookie-banner license key',
+            );
         }
 
         return true;

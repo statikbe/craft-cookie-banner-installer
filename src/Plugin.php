@@ -64,7 +64,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
-        if (file_exists($dest)) {
+        if (file_exists($dest) && hash_file('sha256', $dest) === hash_file('sha256', $source)) {
             return;
         }
 

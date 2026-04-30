@@ -2,7 +2,7 @@
   "name": "statikbe/craft-cookie-banner-installer",
   "description": "Composer plugin that installs content migrations shipped with statikbe/craft-cookie-banner so they run during the standard Craft deploy flow.",
   "type": "composer-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "authors": [
     {
